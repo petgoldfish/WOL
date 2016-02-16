@@ -1,11 +1,12 @@
 package com.petgoldfish.wolbruv;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         wolButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                wakeOnLan = new WakeOnLan(macText.getText().toString(), ipText.getText().toString());
+                wakeOnLan = new WakeOnLan(macText.getText().toString().trim(), ipText.getText().toString().trim());
                 new WOL().execute("");
             }
         });
@@ -43,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
             wakeOnLan.run();
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Toast.makeText(MainActivity.this, "Woken, bruv", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -6,14 +6,11 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-/**
- * Created by petgoldfish on 14-02-2016.
- */
 public class WakeOnLan implements Runnable {
-    private static final String TAG = "WOL";
+    private static final String TAG = "DeviceData";
+    private static final int PORT = 9;
     private final String mIpStr;
     private final String mMacAddress;
-    private static final int PORT = 9;
     private final int MAC_SIZE = 6;
 
     public WakeOnLan(String macAddress, String ip) {

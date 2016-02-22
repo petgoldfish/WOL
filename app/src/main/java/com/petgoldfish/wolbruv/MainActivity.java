@@ -3,6 +3,7 @@ package com.petgoldfish.wolbruv;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -17,7 +18,6 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
 
@@ -38,12 +38,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setColorSchemeColors(R.color.colorPrimary, R.color.colorAccent);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshList();
-                swipeRefreshLayout.setRefreshing(false);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 1500);
             }
         });
 
@@ -52,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
 
         FadeInRightAnimator animator = new FadeInRightAnimator();
-        animator.setAddDuration(1000);
-        animator.setRemoveDuration(1000);
+        animator.setAddDuration(500);
+        animator.setRemoveDuration(500);
         recyclerView.setItemAnimator(animator);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         //Validation
                                         if (!exists) {
-                                            //deviceData.save();
+                                            deviceData.save();
                                             dataList.add(deviceData);
                                             adapter.addItem();
 
@@ -126,12 +131,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshList() {
 
-        dataList = DeviceData.listAll(DeviceData.class, "alias");
-
+        dataList = DeviceData.listAll(DeviceData.class, "id");
         adapter = new RVAdapter(this, dataList);
-        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
-        alphaAdapter.setDuration(1000);
-        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
+        recyclerView.setAdapter(new ScaleInAnimationAdapter(adapter));
 
     }
 }

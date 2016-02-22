@@ -37,12 +37,22 @@
                 android:text="Mac"
                 android:visibility="gone" />
 
+
             <TextView
                 android:id="@+id/IPDisplay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:text="IP"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/editBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_mode_edit_black_24dp"
                 android:visibility="gone" />
 
 
@@ -56,6 +66,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:padding="12dp"
             android:text="@string/wake_btn_text" />
 
     </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,10 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
+
 public class MainActivity extends AppCompatActivity {
 
     final Context context = this;
@@ -23,17 +28,33 @@ public class MainActivity extends AppCompatActivity {
     private EditText IPPrompt;
     private EditText aliasPrompt;
     private RecyclerView recyclerView;
+    private RVAdapter adapter;
     private List<DeviceData> dataList;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = (RecyclerView) findViewById(R.id.rv);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeColors(R.color.colorPrimary, R.color.colorAccent);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshList();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        recyclerView = (RecyclerView) findViewById(R.id.rv);
         recyclerView.setLayoutManager(linearLayoutManager);
+
+        FadeInRightAnimator animator = new FadeInRightAnimator();
+        animator.setAddDuration(1000);
+        animator.setRemoveDuration(1000);
+        recyclerView.setItemAnimator(animator);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,8 +99,10 @@ public class MainActivity extends AppCompatActivity {
 
                                         //Validation
                                         if (!exists) {
-                                            deviceData.save();
-                                            refreshList();
+                                            //deviceData.save();
+                                            dataList.add(deviceData);
+                                            adapter.addItem();
+
                                         } else {
                                             Toast.makeText(context, "Device exists", Toast.LENGTH_LONG).show();
                                         }
@@ -105,8 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
         dataList = DeviceData.listAll(DeviceData.class, "alias");
 
-        RVAdapter adapter = new RVAdapter(this, dataList);
-        recyclerView.setAdapter(adapter);
+        adapter = new RVAdapter(this, dataList);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
+        alphaAdapter.setDuration(1000);
+        recyclerView.setAdapter(new ScaleInAnimationAdapter(alphaAdapter));
 
     }
 }

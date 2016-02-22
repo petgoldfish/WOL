@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -14,13 +15,12 @@ import java.util.List;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
-    private Context context;
     private LayoutInflater layoutInflater;
     private List<DeviceData> deviceDataList = Collections.emptyList();
     private WakeOnLan wakeOnLan;
 
     public RVAdapter(Context context, List<DeviceData> deviceData) {
-        this.context = context;
+
         this.deviceDataList = deviceData;
         layoutInflater = LayoutInflater.from(context);
     }
@@ -33,16 +33,31 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         final DeviceData current = deviceDataList.get(position);
+        String macText, IPText;
+        macText = "MAC - " + current.MAC;
+        IPText = "IP - " + current.IP;
         holder.aliasDisplay.setText(current.alias);
-        holder.macDisplay.setText(current.MAC);
-        holder.IPDisplay.setText(current.IP);
+        holder.macDisplay.setText(macText);
+        holder.IPDisplay.setText(IPText);
         holder.wakeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 wakeOnLan = new WakeOnLan(current.MAC, current.IP);
                 new WOL().execute();
+            }
+        });
+        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.macDisplay.getVisibility() == View.GONE) {
+                    holder.macDisplay.setVisibility(View.VISIBLE);
+                    holder.IPDisplay.setVisibility(View.VISIBLE);
+                } else {
+                    holder.macDisplay.setVisibility(View.GONE);
+                    holder.IPDisplay.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -52,10 +67,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         return deviceDataList.size();
     }
 
+    public void addItem() {
+        notifyItemInserted(deviceDataList.size());
+    }
+
+    public void removeItem(int position) {
+        deviceDataList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView macDisplay, IPDisplay, aliasDisplay;
         Button wakeBtn;
+        RelativeLayout relativeLayout;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +89,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
             IPDisplay = (TextView) itemView.findViewById(R.id.IPDisplay);
             aliasDisplay = (TextView) itemView.findViewById(R.id.aliasDisplay);
             wakeBtn = (Button) itemView.findViewById(R.id.wakeBtn);
+            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.cardLayout);
 
         }
     }
@@ -73,6 +99,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         @Override
         protected String doInBackground(String... params) {
 
+            wakeOnLan.run();
+            wakeOnLan.run();
             wakeOnLan.run();
 
             return null;

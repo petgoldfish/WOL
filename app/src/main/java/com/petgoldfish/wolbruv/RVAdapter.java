@@ -122,9 +122,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                         .setNeutralButton("Delete",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        DeviceData del = DeviceData.findById(DeviceData.class, current.getId());
-                                        del.delete();
-                                        removeItem(position);
+                                        deviceDataList = removeItem(position, current.getId());
                                     }
                                 })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -151,7 +149,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                removeItem(position);
+                                deviceDataList = removeItem(position, current.getId());
                             }
                         })
                         .setNeutralButton("No", new DialogInterface.OnClickListener() {
@@ -173,13 +171,16 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         return deviceDataList.size();
     }
 
-    public void addItem() {
+    public List<DeviceData> addItem() {
         notifyItemInserted(deviceDataList.size());
+        return DeviceData.listAll(DeviceData.class, "id");
     }
 
-    public void removeItem(int position) {
-        deviceDataList.remove(position);
+    public List<DeviceData> removeItem(int position, long id) {
+        DeviceData delObj = DeviceData.findById(DeviceData.class, id);
+        delObj.delete();
         notifyItemRemoved(position);
+        return DeviceData.listAll(DeviceData.class, "id");
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

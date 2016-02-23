@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                                         if (!exists) {
                                             deviceData.save();
                                             dataList.add(deviceData);
-                                            adapter.addItem();
+                                            dataList = adapter.addItem();
 
                                         } else {
                                             Toast.makeText(context, "Device exists", Toast.LENGTH_LONG).show();

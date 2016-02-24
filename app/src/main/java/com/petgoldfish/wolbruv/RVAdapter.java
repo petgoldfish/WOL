@@ -13,7 +13,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,8 +42,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
         final DeviceData current = deviceDataList.get(position);
+        final int pos = holder.getAdapterPosition();
         String macText, IPText;
         macText = "MAC - " + current.MAC;
         IPText = "IP - " + current.IP;
@@ -97,32 +97,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        boolean exists = false;
+                                        DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
+                                        sav.MAC = macPrompt.getText().toString().trim();
+                                        sav.IP = IPPrompt.getText().toString().trim();
+                                        sav.alias = aliasPrompt.getText().toString().trim();
+                                        sav.save();
 
-                                        for (int i = 0; i < deviceDataList.size(); i++) {
-                                            DeviceData temp = deviceDataList.get(i);
-                                            if (temp.MAC.equalsIgnoreCase(macPrompt.getText().toString().trim())) {
-                                                exists = true;
-                                            }
-                                        }
-
-                                        //Validation
-                                        if (!exists) {
-                                            DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
-                                            sav.MAC = macPrompt.getText().toString().trim();
-                                            sav.IP = IPPrompt.getText().toString().trim();
-                                            sav.alias = aliasPrompt.getText().toString().trim();
-                                            sav.save();
-
-                                        } else {
-                                            Toast.makeText(mContext, "Device exists", Toast.LENGTH_LONG).show();
-                                        }
                                     }
                                 })
                         .setNeutralButton("Delete",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        deviceDataList = removeItem(position, current.getId());
+                                        removeItem(current, pos);
                                     }
                                 })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -149,7 +135,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                deviceDataList = removeItem(position, current.getId());
+                                removeItem(current, pos);
                             }
                         })
                         .setNeutralButton("No", new DialogInterface.OnClickListener() {
@@ -171,16 +157,18 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         return deviceDataList.size();
     }
 
-    public List<DeviceData> addItem() {
-        notifyItemInserted(deviceDataList.size());
-        return DeviceData.listAll(DeviceData.class, "id");
+    public List<DeviceData> addItem(DeviceData addObj, int pos) {
+        notifyItemInserted(pos);
+        deviceDataList.add(addObj);
+        addObj.save();
+        return deviceDataList;
     }
 
-    public List<DeviceData> removeItem(int position, long id) {
-        DeviceData delObj = DeviceData.findById(DeviceData.class, id);
-        delObj.delete();
+    public void removeItem(DeviceData delObj, int position) {
+
         notifyItemRemoved(position);
-        return DeviceData.listAll(DeviceData.class, "id");
+        deviceDataList.remove(delObj);
+        delObj.delete();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

@@ -2,6 +2,7 @@ package com.petgoldfish.wolbruv;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -11,10 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -42,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshList();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        refreshList();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1500);
@@ -64,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        refreshList();
+        //Load data asynchronously
+        new loadData().execute();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -89,28 +91,13 @@ public class MainActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        boolean exists = false;
-
                                         DeviceData deviceData = new DeviceData(macPrompt.getText().toString().trim(),
                                                 IPPrompt.getText().toString().trim(),
                                                 aliasPrompt.getText().toString().trim());
 
-                                        for (int i = 0; i < dataList.size(); i++) {
-                                            DeviceData temp = dataList.get(i);
-                                            if (temp.MAC.equalsIgnoreCase(macPrompt.getText().toString().trim())) {
-                                                exists = true;
-                                            }
-                                        }
+                                        deviceData.save();
+                                        dataList = adapter.addItem(deviceData, dataList.size());
 
-                                        //Validation
-                                        if (!exists) {
-                                            deviceData.save();
-                                            dataList.add(deviceData);
-                                            dataList = adapter.addItem();
-
-                                        } else {
-                                            Toast.makeText(context, "Device exists", Toast.LENGTH_LONG).show();
-                                        }
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -134,6 +121,18 @@ public class MainActivity extends AppCompatActivity {
         dataList = DeviceData.listAll(DeviceData.class, "id");
         adapter = new RVAdapter(this, dataList);
         recyclerView.setAdapter(new ScaleInAnimationAdapter(adapter));
+        Log.v("REFRESH", "Refreshed");
 
+    }
+
+    class loadData extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            refreshList();
+
+            return null;
+        }
     }
 }

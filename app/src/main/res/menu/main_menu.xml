@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group
+        android:id="@+id/radio"
+        android:checkableBehavior="single">
 
-    <item
-        android:id="@+id/lightTheme"
-        android:checked="true"
-        android:title="@string/default_theme_text" />
+        <item
+            android:id="@+id/lightTheme"
+            android:title="@string/default_theme_text" />
 
-    <item
-        android:id="@+id/darkTheme"
-        android:title="@string/dark_theme_text" />
+        <item
+            android:id="@+id/darkTheme"
+            android:title="@string/dark_theme_text" />
 
+    </group>
 
 </menu>

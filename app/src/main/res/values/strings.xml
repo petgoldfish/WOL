@@ -4,4 +4,6 @@
     <string name="ip_hint_text">IP Address</string>
     <string name="alias_prompt_text">Device Alias</string>
     <string name="wake_btn_text">WAKE</string>
+    <string name="default_theme_text">Default theme</string>
+    <string name="dark_theme_text">Dark theme</string>
 </resources>

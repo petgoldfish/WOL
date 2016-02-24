@@ -2,10 +2,13 @@ package com.petgoldfish.wolbruv;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.IntentCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +17,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -24,7 +30,11 @@ import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
     final Context context = this;
+    int defaultTheme = R.style.AppTheme;
+    int darkTheme = R.style.AppTheme_Dark;
+    int theme = defaultTheme;
     private EditText macPrompt;
     private EditText IPPrompt;
     private EditText aliasPrompt;
@@ -32,21 +42,34 @@ public class MainActivity extends AppCompatActivity {
     private RVAdapter adapter;
     private List<DeviceData> dataList;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private SharedPreferences.Editor editor;
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        boolean dark = sharedPreferences.getBoolean("dark", false);
+        if (dark) {
+            theme = darkTheme;
+        } else {
+            theme = defaultTheme;
+        }
+
+        setTheme(theme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+        swipeRefreshLayout.setDistanceToTriggerSync(50);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        refreshList();
+                        //Load data asynchronously
+                        new loadData().execute();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1500);
@@ -65,8 +88,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Load data asynchronously
-        new loadData().execute();
+        refreshList();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -114,6 +136,48 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+
+        switch (item.getItemId()) {
+            case R.id.lightTheme:
+                if (!(theme == defaultTheme)) {
+                    editor.putBoolean("dark", false);
+                    editor.apply();
+                    restartActivity();
+                }
+                break;
+            case R.id.darkTheme:
+                if (!(theme == darkTheme)) {
+                    editor.putBoolean("dark", true);
+                    editor.apply();
+                    restartActivity();
+                }
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return true;
+    }
+
+    public void restartActivity() {
+
+        finish();
+        final Intent intent = getIntent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | IntentCompat.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+
     }
 
     public void refreshList() {

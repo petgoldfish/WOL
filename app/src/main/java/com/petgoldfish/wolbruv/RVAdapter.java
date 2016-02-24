@@ -44,7 +44,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(final MyViewHolder holder, int position) {
         final DeviceData current = deviceDataList.get(position);
-        final int pos = holder.getAdapterPosition();
         String macText, IPText;
         macText = "MAC - " + current.MAC;
         IPText = "IP - " + current.IP;
@@ -108,7 +107,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                         .setNeutralButton("Delete",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        removeItem(current, pos);
+                                        removeItem(current, holder.getAdapterPosition());
                                     }
                                 })
                         .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -135,7 +134,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                removeItem(current, pos);
+                                removeItem(current, holder.getAdapterPosition());
                             }
                         })
                         .setNeutralButton("No", new DialogInterface.OnClickListener() {

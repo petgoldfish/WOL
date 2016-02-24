@@ -117,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
                                                 IPPrompt.getText().toString().trim(),
                                                 aliasPrompt.getText().toString().trim());
 
-                                        deviceData.save();
                                         dataList = adapter.addItem(deviceData, dataList.size());
 
                                     }

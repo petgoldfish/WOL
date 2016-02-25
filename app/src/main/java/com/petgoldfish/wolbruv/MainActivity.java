@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -68,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Load data asynchronously
-                        new loadData().execute();
+                        refreshList();
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1500);
@@ -186,16 +184,5 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new ScaleInAnimationAdapter(adapter));
         Log.v("REFRESH", "Refreshed");
 
-    }
-
-    class loadData extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            refreshList();
-
-            return null;
-        }
     }
 }

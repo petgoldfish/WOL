@@ -100,6 +100,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                         sav.MAC = macPrompt.getText().toString().trim();
                                         sav.IP = IPPrompt.getText().toString().trim();
                                         sav.alias = aliasPrompt.getText().toString().trim();
+                                        holder.macDisplay.setText(sav.MAC);
+                                        holder.IPDisplay.setText(sav.IP);
+                                        holder.aliasDisplay.setText(sav.alias);
                                         sav.save();
 
                                     }

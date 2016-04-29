@@ -13,12 +13,18 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
+    private static final Pattern IP_PATTERN = Pattern.compile(
+            "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
+    private static final Pattern MAC_PATTERN = Pattern.compile(
+            "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     private LayoutInflater layoutInflater;
     private List<DeviceData> deviceDataList = Collections.emptyList();
     private WakeOnLan wakeOnLan;
@@ -32,6 +38,14 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         this.deviceDataList = deviceData;
         mContext = context;
         layoutInflater = LayoutInflater.from(context);
+    }
+
+    public static boolean validateMac(final String mac) {
+        return MAC_PATTERN.matcher(mac).matches();
+    }
+
+    public static boolean validateIP(final String ip) {
+        return IP_PATTERN.matcher(ip).matches();
     }
 
     @Override
@@ -96,14 +110,22 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
-                                        sav.MAC = macPrompt.getText().toString().trim();
-                                        sav.IP = IPPrompt.getText().toString().trim();
-                                        sav.alias = aliasPrompt.getText().toString().trim();
-                                        holder.macDisplay.setText(sav.MAC);
-                                        holder.IPDisplay.setText(sav.IP);
-                                        holder.aliasDisplay.setText(sav.alias);
-                                        sav.save();
+                                        if (!validateIP(IPPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid IP", Toast.LENGTH_LONG).show();
+                                        } else if (!validateMac(macPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
+                                            sav.MAC = macPrompt.getText().toString().trim();
+                                            sav.IP = IPPrompt.getText().toString().trim();
+                                            sav.alias = aliasPrompt.getText().toString().trim();
+                                            sav.save();
+                                            String newMac = "MAC - " + sav.MAC;
+                                            String newIP = "IP - " + sav.IP;
+                                            holder.macDisplay.setText(newMac);
+                                            holder.IPDisplay.setText(newIP);
+                                            holder.aliasDisplay.setText(sav.alias);
+                                        }
 
                                     }
                                 })

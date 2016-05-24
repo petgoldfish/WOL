@@ -15,4 +15,4 @@
 
 ## License
 
-Code released under [the MIT license](https://github.com/petgoldfish/WOL/LICENSE).
+Code released under [the MIT license](https://github.com/petgoldfish/WOL/blob/master/LICENSE).

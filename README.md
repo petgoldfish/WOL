@@ -5,7 +5,8 @@
 ## Screenshots ##
 
 
-![enter image description here](https://cloud.githubusercontent.com/assets/15173172/13332945/594c346a-dc2a-11e5-9524-ec04bd655675.png)
+<img src="https://cloud.githubusercontent.com/assets/15173172/13332945/594c346a-dc2a-11e5-9524-ec04bd655675.png " width="500">
+
 
 ![enter image description here](https://cloud.githubusercontent.com/assets/15173172/13332944/594bcc8c-dc2a-11e5-8ef2-66c5603074bf.png)
 

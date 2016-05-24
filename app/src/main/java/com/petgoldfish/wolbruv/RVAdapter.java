@@ -15,6 +15,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.petgoldfish.wolbruv.DB.DBController;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -32,9 +34,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     private EditText IPPrompt;
     private EditText aliasPrompt;
     private Context mContext;
+    private DBController dbController;
 
     public RVAdapter(Context context, List<DeviceData> deviceData) {
 
+        dbController = new DBController(context);
         this.deviceDataList = deviceData;
         mContext = context;
         layoutInflater = LayoutInflater.from(context);
@@ -115,11 +119,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                         } else if (!validateMac(macPrompt.getText().toString().trim())) {
                                             Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
                                         } else {
-                                            DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
+                                            //DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
+                                            DeviceData sav = dbController.getDeviceData(current.getId());
                                             sav.MAC = macPrompt.getText().toString().trim();
                                             sav.IP = IPPrompt.getText().toString().trim();
                                             sav.alias = aliasPrompt.getText().toString().trim();
-                                            sav.save();
+                                            //sav.save();
                                             String newMac = "MAC - " + sav.MAC;
                                             String newIP = "IP - " + sav.IP;
                                             holder.macDisplay.setText(newMac);
@@ -184,7 +189,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     public List<DeviceData> addItem(DeviceData addObj, int pos) {
         notifyItemInserted(pos);
         deviceDataList.add(addObj);
-        addObj.save();
+        //addObj.save();
+        dbController.addDeviceData(addObj);
         return deviceDataList;
     }
 
@@ -192,7 +198,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
         notifyItemRemoved(position);
         deviceDataList.remove(delObj);
-        delObj.delete();
+        //delObj.delete();
+        dbController.deleteDeviceData(delObj);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

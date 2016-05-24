@@ -22,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.petgoldfish.wolbruv.DB.DBController;
+
 import java.util.List;
 
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private List<DeviceData> dataList;
     private SwipeRefreshLayout swipeRefreshLayout;
     private SharedPreferences.Editor editor;
+    private DBController dbController;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -73,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 }, 1500);
             }
         });
+        dbController = new DBController(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerView = (RecyclerView) findViewById(R.id.rv);
@@ -179,7 +183,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void refreshList() {
 
-        dataList = DeviceData.listAll(DeviceData.class, "id");
+        //dataList = DeviceData.listAll(DeviceData.class, "id");
+        dataList = dbController.getAllDeviceDatas();
         adapter = new RVAdapter(this, dataList);
         recyclerView.setAdapter(new ScaleInAnimationAdapter(adapter));
         Log.v("REFRESH", "Refreshed");

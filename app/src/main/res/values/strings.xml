@@ -6,4 +6,7 @@
     <string name="wake_btn_text">WAKE</string>
     <string name="default_theme_text">Default theme</string>
     <string name="dark_theme_text">Dark theme</string>
+    <string name="alias">Alias</string>
+    <string name="mac">Mac</string>
+    <string name="ip">IP</string>
 </resources>

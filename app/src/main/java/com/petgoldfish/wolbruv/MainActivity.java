@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.petgoldfish.wolbruv.DB.DBController;
 
@@ -32,7 +33,7 @@ import jp.wasabeef.recyclerview.animators.FadeInRightAnimator;
 public class MainActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    final Context context = this;
+    final Context mContext = this;
     int defaultTheme = R.style.AppTheme;
     int darkTheme = R.style.AppTheme_Dark;
     int theme = defaultTheme;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         });
         dbController = new DBController(this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
         recyclerView = (RecyclerView) findViewById(R.id.rv);
         recyclerView.setLayoutManager(linearLayoutManager);
 
@@ -97,11 +98,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(final View view) {
 
-                LayoutInflater li = LayoutInflater.from(context);
+                LayoutInflater li = LayoutInflater.from(mContext);
                 View promptsView = li.inflate(R.layout.add_prompt, null);
 
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
+                        mContext);
                 alertDialogBuilder.setView(promptsView);
 
                 macPrompt = (EditText) promptsView.findViewById(R.id.macPrompt);
@@ -115,11 +116,18 @@ public class MainActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        DeviceData deviceData = new DeviceData(macPrompt.getText().toString().trim(),
-                                                IPPrompt.getText().toString().trim(),
-                                                aliasPrompt.getText().toString().trim());
+                                        if (!Utils.validateIP(IPPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid IP", Toast.LENGTH_LONG).show();
+                                        } else if (!Utils.validateMac(macPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
+                                        } else {
 
-                                        dataList = adapter.addItem(deviceData, dataList.size());
+                                            DeviceData deviceData = new DeviceData(macPrompt.getText().toString().trim(),
+                                                    IPPrompt.getText().toString().trim(),
+                                                    aliasPrompt.getText().toString().trim());
+
+                                            dataList = adapter.addItem(deviceData, dataList.size());
+                                        }
 
                                     }
                                 })

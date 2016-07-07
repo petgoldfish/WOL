@@ -19,14 +19,9 @@ import com.petgoldfish.wolbruv.DB.DBController;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
 
-    private static final Pattern IP_PATTERN = Pattern.compile(
-            "^(([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.){3}([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
-    private static final Pattern MAC_PATTERN = Pattern.compile(
-            "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     private LayoutInflater layoutInflater;
     private List<DeviceData> deviceDataList = Collections.emptyList();
     private WakeOnLan wakeOnLan;
@@ -42,14 +37,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         this.deviceDataList = deviceData;
         mContext = context;
         layoutInflater = LayoutInflater.from(context);
-    }
-
-    public static boolean validateMac(final String mac) {
-        return MAC_PATTERN.matcher(mac).matches();
-    }
-
-    public static boolean validateIP(final String ip) {
-        return IP_PATTERN.matcher(ip).matches();
     }
 
     @Override
@@ -114,9 +101,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        if (!validateIP(IPPrompt.getText().toString().trim())) {
+                                        if (!Utils.validateIP(IPPrompt.getText().toString().trim())) {
                                             Toast.makeText(mContext, "Invalid IP", Toast.LENGTH_LONG).show();
-                                        } else if (!validateMac(macPrompt.getText().toString().trim())) {
+                                        } else if (!Utils.validateMac(macPrompt.getText().toString().trim())) {
                                             Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
                                         } else {
                                             //DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());

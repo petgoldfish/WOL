@@ -60,7 +60,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final DeviceData current = deviceDataList.get(position);
         String macText, IPText;
         macText = "MAC - " + current.MAC;
@@ -125,6 +125,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                             sav.IP = IPPrompt.getText().toString().trim();
                                             sav.alias = aliasPrompt.getText().toString().trim();
                                             //sav.save();
+                                            updateItem(sav,position);
                                             String newMac = "MAC - " + sav.MAC;
                                             String newIP = "IP - " + sav.IP;
                                             holder.macDisplay.setText(newMac);
@@ -200,6 +201,16 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         deviceDataList.remove(delObj);
         //delObj.delete();
         dbController.deleteDeviceData(delObj);
+    }
+
+    public void updateItem(DeviceData deviceData,int position){
+        DeviceData data = deviceDataList.get(position);
+        data.setAlias(deviceData.getAlias());
+        data.setId(deviceData.getId());
+        data.setIP(deviceData.getIP());
+        data.setMAC(deviceData.getMAC());
+        notifyDataSetChanged();
+        dbController.updateDeviceData(deviceData);
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

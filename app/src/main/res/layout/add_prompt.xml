@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/aliasPrompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -17,14 +17,14 @@
 
             <requestFocus />
 
-        </EditText>
+        </android.support.design.widget.TextInputEditText>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/macPrompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/IPPrompt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -116,10 +116,8 @@ public class MainActivity extends AppCompatActivity {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        if (!Utils.validateIP(IPPrompt.getText().toString().trim())) {
-                                            Toast.makeText(mContext, "Invalid IP", Toast.LENGTH_LONG).show();
-                                        } else if (!Utils.validateMac(macPrompt.getText().toString().trim())) {
-                                            Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
+                                        if (!Utils.validateInput(IPPrompt.getText().toString().trim(), macPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid IP and/or MAC", Toast.LENGTH_LONG).show();
                                         } else {
 
                                             DeviceData deviceData = new DeviceData(macPrompt.getText().toString().trim(),

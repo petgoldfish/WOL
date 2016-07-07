@@ -62,17 +62,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                 new WOL().execute();
             }
         });
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        holder.cardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.macDisplay.getVisibility() == View.GONE) {
-                    holder.macDisplay.setVisibility(View.VISIBLE);
-                    holder.IPDisplay.setVisibility(View.VISIBLE);
-                    holder.editBtn.setVisibility(View.VISIBLE);
+                if (holder.secondaryRow.getVisibility() == View.GONE) {
+                    holder.secondaryRow.setVisibility(View.VISIBLE);
                 } else {
-                    holder.macDisplay.setVisibility(View.GONE);
-                    holder.IPDisplay.setVisibility(View.GONE);
-                    holder.editBtn.setVisibility(View.GONE);
+                    holder.secondaryRow.setVisibility(View.GONE);
                 }
             }
         });
@@ -101,10 +97,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
 
-                                        if (!Utils.validateIP(IPPrompt.getText().toString().trim())) {
-                                            Toast.makeText(mContext, "Invalid IP", Toast.LENGTH_LONG).show();
-                                        } else if (!Utils.validateMac(macPrompt.getText().toString().trim())) {
-                                            Toast.makeText(mContext, "Invalid MAC", Toast.LENGTH_LONG).show();
+                                        if (!Utils.validateInput(IPPrompt.getText().toString().trim(), macPrompt.getText().toString().trim())) {
+                                            Toast.makeText(mContext, "Invalid IP and/or MAC", Toast.LENGTH_LONG).show();
                                         } else {
                                             //DeviceData sav = DeviceData.findById(DeviceData.class, current.getId());
                                             DeviceData sav = dbController.getDeviceData(current.getId());
@@ -142,7 +136,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
                 alertDialog.show();
             }
         });
-        holder.relativeLayout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.cardLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
@@ -205,7 +199,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
         TextView macDisplay, IPDisplay, aliasDisplay;
         Button wakeBtn;
         ImageButton editBtn;
-        RelativeLayout relativeLayout;
+        RelativeLayout cardLayout, secondaryRow;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -215,7 +209,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.MyViewHolder> {
             aliasDisplay = (TextView) itemView.findViewById(R.id.aliasDisplay);
             wakeBtn = (Button) itemView.findViewById(R.id.wakeBtn);
             editBtn = (ImageButton) itemView.findViewById(R.id.editBtn);
-            relativeLayout = (RelativeLayout) itemView.findViewById(R.id.cardLayout);
+            cardLayout = (RelativeLayout) itemView.findViewById(R.id.cardLayout);
+            secondaryRow = (RelativeLayout) itemView.findViewById(R.id.secondary_row);
 
         }
     }

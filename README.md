@@ -1,6 +1,6 @@
-#WOL
+# WOL
 
-**Sends WOL magic packet taking MAC and IP as input**
+**Broadcasts WOL magic packet using MAC and IP as input**
 
 ## Screenshots 
 
